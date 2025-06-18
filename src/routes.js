@@ -29,7 +29,7 @@ routes.get('/categories', CategoryController.index);
 routes.put('/categories/:id', hasRole('admin'), upload.single('file'),CategoryController.update);
 
 routes.post('/orders', OrderController.store);
-routes.get('/orders', hasRole('admin'), OrderController.index); // só admin pode ver todos os pedidos
-routes.put('/orders/:id', hasRole('admin'), OrderController.update); // apenas admin pode mudar status
+routes.get('/orders', hasRole('admin'), OrderController.index);
+routes.put('/orders/:id', hasRole('admin'), OrderController.update); 
 
 export default routes;
