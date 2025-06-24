@@ -1,4 +1,5 @@
-import Sequelize, { Model } from 'sequelize';
+import Sequelize, { Model, DataTypes } from 'sequelize';
+
 
 import bcrypt from 'bcrypt';
 
@@ -12,6 +13,10 @@ class User extends Model {
             role: {
                 type: Sequelize.STRING,
                 defaultValue: 'user', 
+            },
+            resetToken: {
+                type: DataTypes.STRING,
+                allowNull: true, 
             },
         },
             {

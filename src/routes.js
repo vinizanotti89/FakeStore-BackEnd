@@ -10,6 +10,7 @@ import SessionController from './app/controllers/SessionController';
 import ProductController from './app/controllers/ProductController';
 import CategoryController from './app/controllers/CategoryController';
 import OrderController from './app/controllers/OrderController';
+import ForgotPasswordController from './app/controllers/ForgotPasswordController';
 
 const routes = Router();
 
@@ -17,6 +18,9 @@ const upload = multer(multerConfig);
 
 routes.post('/users', UserController.store);
 routes.post('/session', SessionController.store);
+
+routes.post('/forgot-password', ForgotPasswordController.createToken);
+routes.post('/forgot-password/:token', ForgotPasswordController.resetPassword);
 
 routes.use(authMiddleware); // Aplica authMiddleware para todas as rotas abaixo
 

@@ -1,8 +1,9 @@
-import { v4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 import User from '../models/User';
 
 import * as Yup from 'yup';
+
 
 class UserController {
     async store(request, response) {
@@ -21,6 +22,8 @@ class UserController {
 
         const { name, email, password, role } = request.body;
 
+
+
         const userExists = await User.findOne({
             where: {
                 email
@@ -31,19 +34,26 @@ class UserController {
         }
 
         const user = await User.create({
-            id: v4(),
+            id: uuidv4(),
             name,
             email,
             password,
             role,
         });
+
+        const resetToken = uuidv4();
+        user.resetToken = resetToken;
+        await user.save();
+
         return response.status(201).json({
             id: user.id,
             name: user.name,
             email: user.email,
-            role: user.admin
+            role: user.admin,
+            resetToken: user.resetToken, 
         });
     }
+
 
 }
 
