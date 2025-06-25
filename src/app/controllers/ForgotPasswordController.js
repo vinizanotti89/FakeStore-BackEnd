@@ -15,9 +15,11 @@ class ForgotPasswordController {
         user.resetToken = resetToken;
         await user.save();
 
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+
         return response.json({
             message: 'Em um app real você receberia esse link por e-mail. Mas aqui vai direto. Porque somos devs e sabemos o que importa. 😎',
-            resetLink: `http://localhost:5173/resetar-senha/${resetToken}`
+            resetLink: `${frontendUrl}/resetar-senha/${resetToken}`
         });
     }
 
