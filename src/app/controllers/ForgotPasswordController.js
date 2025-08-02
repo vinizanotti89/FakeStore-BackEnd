@@ -39,6 +39,21 @@ class ForgotPasswordController {
 
         return response.json({ message: 'Senha redefinida com sucesso!' });
     }
+
+    async getUserByToken(req, res) {
+        const { token } = req.params;
+
+        const user = await User.findOne({
+            where: { resetToken: token },
+            attributes: ['email'],
+        });
+
+        if (!user) {
+            return res.status(404).json({ error: 'Token inválido ou expirado' });
+        }
+
+        return res.json({ email: user.email });
+    }
 }
 
 export default new ForgotPasswordController();

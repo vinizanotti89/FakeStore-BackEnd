@@ -8,15 +8,22 @@ class User extends Model {
         super.init({
             name: Sequelize.STRING,
             email: Sequelize.STRING,
-            password: Sequelize.VIRTUAL,
+            password: {
+                type: DataTypes.VIRTUAL,
+                set(value) {
+                    this.setDataValue('password', value);
+                    this.password_hash = bcrypt.hashSync(value, 6)
+                },
+            },
             password_hash: Sequelize.STRING,
             role: {
                 type: Sequelize.STRING,
-                defaultValue: 'user', 
+                defaultValue: 'user',
             },
             resetToken: {
                 type: DataTypes.STRING,
-                allowNull: true, 
+                allowNull: true,
+                field: 'resetToken',
             },
         },
             {

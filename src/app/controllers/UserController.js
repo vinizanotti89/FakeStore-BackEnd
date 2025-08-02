@@ -30,7 +30,7 @@ class UserController {
             }
         });
         if (userExists) {
-            return response.status(400).json({ error: 'User already exists' });
+            return response.status(400).json({ error: 'Usuário ja cadastrado' });
         }
 
         const user = await User.create({
