@@ -26,6 +26,7 @@ routes.post('/reset-password/:token', ForgotPasswordController.resetPassword);
 // Rotas públicas de produtos e categorias
 routes.get('/products/offers', ProductController.getOffers); // Rota para produtos em oferta
 routes.get('/products/category/:categoryId', ProductController.getByCategory); // Produtos por categoria
+routes.get('/products/:id', ProductController.show); // Detalhes de um produto específico
 routes.get('/categories', CategoryController.index);
 
 // Rotas administrativas de produtos

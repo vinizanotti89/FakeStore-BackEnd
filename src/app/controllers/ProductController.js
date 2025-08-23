@@ -57,8 +57,8 @@ class ProductController {
         let path;
         if (request.file) {
             path = request.file.filename;
-        } 
-    
+        }
+
         const { name, price, category_id, offer, description } = request.body;
         await Product.update(
             {
@@ -115,8 +115,8 @@ class ProductController {
             return response.json(products);
         } catch (error) {
             console.error('Erro ao buscar produtos em oferta:', error);
-            return response.status(500).json({ 
-                error: 'Erro interno do servidor ao buscar produtos em oferta' 
+            return response.status(500).json({
+                error: 'Erro interno do servidor ao buscar produtos em oferta'
             });
         }
     }
@@ -143,8 +143,36 @@ class ProductController {
             return response.json(products);
         } catch (error) {
             console.error('Erro ao buscar produtos por categoria:', error);
-            return response.status(500).json({ 
-                error: 'Erro interno do servidor ao buscar produtos por categoria' 
+            return response.status(500).json({
+                error: 'Erro interno do servidor ao buscar produtos por categoria'
+            });
+        }
+    }
+
+    // Novo método para buscar um produto específico por ID
+    async show(request, response) {
+        const { id } = request.params;
+
+        try {
+            const product = await Product.findByPk(id, {
+                include: [
+                    {
+                        model: Category,
+                        as: 'category',
+                        attributes: ['id', 'name'],
+                    },
+                ],
+            });
+
+            if (!product) {
+                return response.status(404).json({ error: 'Produto não encontrado' });
+            }
+
+            return response.json(product);
+        } catch (error) {
+            console.error('Erro ao buscar produto:', error);
+            return response.status(500).json({
+                error: 'Erro interno do servidor ao buscar produto'
             });
         }
     }
