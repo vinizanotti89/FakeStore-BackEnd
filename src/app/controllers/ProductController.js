@@ -30,7 +30,6 @@ class ProductController {
         });
 
         return response.status(201).json(product);
-
     }
 
     async update(request, response) {
@@ -78,7 +77,6 @@ class ProductController {
         );
 
         return response.status(200).json();
-
     }
 
     async index(request, response) {
@@ -97,5 +95,59 @@ class ProductController {
         return response.json(products);
     }
 
+    // Método para buscar apenas produtos em oferta (offer: true)
+    async getOffers(request, response) {
+        try {
+            const products = await Product.findAll({
+                where: {
+                    offer: true
+                },
+                include: [
+                    {
+                        model: Category,
+                        as: 'category',
+                        attributes: ['id', 'name'],
+                    },
+                ],
+                order: [['created_at', 'DESC']] // Os mais recentes primeiro
+            });
+
+            return response.json(products);
+        } catch (error) {
+            console.error('Erro ao buscar produtos em oferta:', error);
+            return response.status(500).json({ 
+                error: 'Erro interno do servidor ao buscar produtos em oferta' 
+            });
+        }
+    }
+
+    // Método para buscar produtos por categoria 
+    async getByCategory(request, response) {
+        const { categoryId } = request.params;
+
+        try {
+            const products = await Product.findAll({
+                where: {
+                    category_id: categoryId
+                },
+                include: [
+                    {
+                        model: Category,
+                        as: 'category',
+                        attributes: ['id', 'name'],
+                    },
+                ],
+                order: [['created_at', 'DESC']]
+            });
+
+            return response.json(products);
+        } catch (error) {
+            console.error('Erro ao buscar produtos por categoria:', error);
+            return response.status(500).json({ 
+                error: 'Erro interno do servidor ao buscar produtos por categoria' 
+            });
+        }
+    }
 }
+
 export default new ProductController;

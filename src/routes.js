@@ -23,13 +23,18 @@ routes.post('/reset-password', ForgotPasswordController.createToken);
 routes.get('/reset-token/:token', ForgotPasswordController.getUserByToken);
 routes.post('/reset-password/:token', ForgotPasswordController.resetPassword);
 
+// Rotas públicas de produtos e categorias
+routes.get('/products/offers', ProductController.getOffers); // Rota para produtos em oferta
+routes.get('/products/category/:categoryId', ProductController.getByCategory); // Produtos por categoria
+routes.get('/categories', CategoryController.index);
+
+// Rotas administrativas de produtos
 routes.post('/products', hasRole('admin'), upload.single('file'), ProductController.store);
 routes.get('/products', hasRole('admin'), ProductController.index);
 routes.put('/products/:id', hasRole('admin'), upload.single('file'), ProductController.update);
 
-routes.post('/categories', hasRole('admin'), upload.single('file'),CategoryController.store);
-routes.get('/categories', CategoryController.index);
-routes.put('/categories/:id', hasRole('admin'), upload.single('file'),CategoryController.update);
+routes.post('/categories', hasRole('admin'), upload.single('file'), CategoryController.store);
+routes.put('/categories/:id', hasRole('admin'), upload.single('file'), CategoryController.update);
 
 routes.use(authMiddleware); // Aplica authMiddleware para todas as rotas abaixo
 
