@@ -12,6 +12,8 @@ import CategoryController from './app/controllers/CategoryController';
 import OrderController from './app/controllers/OrderController';
 import ForgotPasswordController from './app/controllers/ForgotPasswordController';
 
+import CreatePaymentIntentController from './app/controllers/stripe/CreatePaymentIntentController';
+
 const routes = Router();
 
 const upload = multer(multerConfig);
@@ -42,5 +44,7 @@ routes.use(authMiddleware); // Aplica authMiddleware para todas as rotas abaixo
 routes.post('/orders', OrderController.store);
 routes.get('/orders', hasRole('admin'), OrderController.index);
 routes.put('/orders/:id', hasRole('admin'), OrderController.update); 
+
+routes.post('/create-payment-intent', CreatePaymentIntentController.store);
 
 export default routes;
