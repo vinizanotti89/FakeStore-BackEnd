@@ -5,14 +5,14 @@ import multerConfig from './config/multer';
 import { hasRole } from './app/middlewares/isAdmin';
 import authMiddleware from './app/middlewares/auth';
 
-import UserController from './app/controllers/UserController';
-import SessionController from './app/controllers/SessionController';
-import ProductController from './app/controllers/ProductController';
-import CategoryController from './app/controllers/CategoryController';
-import OrderController from './app/controllers/OrderController';
-import ForgotPasswordController from './app/controllers/ForgotPasswordController';
+import UserController from './app/controllers/UserController.js';
+import SessionController from './app/controllers/SessionController.js';
+import ProductController from './app/controllers/ProductController.js';
+import CategoryController from './app/controllers/CategoryController.js';
+import OrderController from './app/controllers/OrderController.js';
+import ForgotPasswordController from './app/controllers/ForgotPasswordController.js';
 
-import CreatePaymentIntentController from './app/controllers/stripe/CreatePaymentIntentController';
+import CreatePaymentIntentController from './app/controllers/stripe/CreatePaymentIntentController.js';
 
 const routes = Router();
 

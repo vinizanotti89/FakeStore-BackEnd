@@ -1,7 +1,7 @@
 import express from 'express';
 import { resolve } from 'node:path';
 
-import routes from './routes';
+import routes from './routes.js';
 
 import cors from 'cors';
 

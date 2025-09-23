@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import authConfig from '../../config/auth';
+import authConfig from '../../config/auth.js';
 
 function authMiddleware(req, res, next) {
   // Check if the user is authenticated
