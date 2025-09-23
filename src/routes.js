@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import multer from 'multer';
-import multerConfig from './config/multer';
+import multerConfig from './config/multer.js';
 
-import { hasRole } from './app/middlewares/isAdmin';
-import authMiddleware from './app/middlewares/auth';
+import { hasRole } from './app/middlewares/isAdmin.js';
+import authMiddleware from './app/middlewares/auth.js';
 
 import UserController from './app/controllers/UserController.js';
 import SessionController from './app/controllers/SessionController.js';

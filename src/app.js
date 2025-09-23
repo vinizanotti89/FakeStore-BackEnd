@@ -1,12 +1,12 @@
 import express from 'express';
-import { resolve } from 'node:path';
-
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import routes from './routes.js';
-
 import cors from 'cors';
+import './database/index.js';
 
-import './database/index.js'
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 class App {
   constructor() {
@@ -19,12 +19,14 @@ class App {
 
   middlewares() {
     this.app.use(express.json());
+
+    // Agora resolve o caminho corretamente em ESM
     this.app.use(
-      '/product-file', 
+      '/product-file',
       express.static(resolve(__dirname, '..', 'uploads'))
     );
-     this.app.use(
-      '/category-file', 
+    this.app.use(
+      '/category-file',
       express.static(resolve(__dirname, '..', 'uploads'))
     );
   }
@@ -32,7 +34,6 @@ class App {
   routes() {
     this.app.use(routes);
   }
-
 }
 
 export default new App().app;
