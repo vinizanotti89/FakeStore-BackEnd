@@ -4,8 +4,9 @@
   "description": "FakeStore API.",
   "main": "src/server.js",
   "scripts": {
-    "dev": "nodemon"
-  },
+  "dev": "nodemon src/server.js",
+  "start": "node src/server.js"
+},
   "keywords": [],
   "author": {
     "name": "Vinícius Zanotti",
