@@ -8,14 +8,14 @@ class Category extends Model {
             url: {
                 type: Sequelize.VIRTUAL,
                 get() {
-                    return `http://localhost:3001/category-file/${this.path}`;
+                    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+                    return `${baseUrl}/category-file/${this.path}`;
                 },
             },
-        },
-            {
-                sequelize,
-            }
-        );
+        }, {
+            sequelize,
+        });
+
         return this;
     }
 }

@@ -11,7 +11,8 @@ class Product extends Model {
             url: {
                 type: Sequelize.VIRTUAL,
                 get() {
-                    return `http://localhost:3001/product-file/${this.path}`;
+                    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+                    return `${baseUrl}/product-file/${this.path}`;
                 },
             },
         },
@@ -26,7 +27,7 @@ class Product extends Model {
     static associate(models) {
         this.belongsTo(models.Category, { foreignKey: 'category_id', as: 'category' });
     }
-    
+
 }
 
 export default Product;
