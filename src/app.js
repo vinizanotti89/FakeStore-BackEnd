@@ -11,29 +11,33 @@ const __dirname = dirname(__filename);
 class App {
   constructor() {
     this.app = express();
-    
-    this.app.use(cors());
+
+    this.app.use(cors({
+      origin: [
+        "http://localhost:5173",
+        process.env.FRONTEND_URL
+      ]
+    }));
     this.middlewares();
-    this.routes();
-  }
+      this.routes();
+    }
 
   middlewares() {
-    this.app.use(express.json());
+      this.app.use(express.json());
 
-    // Agora resolve o caminho corretamente em ESM
-    this.app.use(
-      '/product-file',
-      express.static(resolve(__dirname, '..', 'uploads'))
-    );
-    this.app.use(
-      '/category-file',
-      express.static(resolve(__dirname, '..', 'uploads'))
-    );
-  }
+      this.app.use(
+        '/product-file',
+        express.static(resolve(__dirname, '..', 'uploads'))
+      );
+      this.app.use(
+        '/category-file',
+        express.static(resolve(__dirname, '..', 'uploads'))
+      );
+    }
 
   routes() {
-    this.app.use(routes);
-  }
+      this.app.use(routes);
+    }
 }
 
 export default new App().app;
