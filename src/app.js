@@ -13,29 +13,34 @@ class App {
     this.app = express();
 
     this.app.use(cors({
-      origin: process.env.FRONTEND_URL || "*"
+      origin: 'https://fake-store-front-end-smoky.vercel.app',
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
+      credentials: true
     }));
-    
+
+    this.app.options('*', cors());
+
     this.middlewares();
-      this.routes();
-    }
+    this.routes();
+  }
 
   middlewares() {
-      this.app.use(express.json());
+    this.app.use(express.json());
 
-      this.app.use(
-        '/product-file',
-        express.static(resolve(__dirname, '..', 'uploads'))
-      );
-      this.app.use(
-        '/category-file',
-        express.static(resolve(__dirname, '..', 'uploads'))
-      );
-    }
+    this.app.use(
+      '/product-file',
+      express.static(resolve(__dirname, '..', 'uploads'))
+    );
+    this.app.use(
+      '/category-file',
+      express.static(resolve(__dirname, '..', 'uploads'))
+    );
+  }
 
   routes() {
-      this.app.use(routes);
-    }
+    this.app.use(routes);
+  }
 }
 
 export default new App().app;
