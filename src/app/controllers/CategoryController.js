@@ -91,13 +91,18 @@ class CategoryController {
     async index(request, response) {
         const categories = await Category.findAll();
 
-        const updatedCategories = categories.map(category => ({
-            ...category.dataValues,
-            url: `${request.protocol}://${request.get('host')}/uploads/${category.path}`
+        const categoriesWithUrl = categories.map((category) => ({
+            id: category.id,
+            name: category.name,
+            path: category.path,
+            createdAt: category.createdAt,
+            updatedAt: category.updatedAt,
+            imageUrl: `${process.env.APP_URL}/uploads/${category.path}`,
         }));
 
-        return response.json(updatedCategories);
+        return response.json(categoriesWithUrl);
     }
+
 
 }
 export default new CategoryController;
