@@ -29,7 +29,12 @@ class ProductController {
             description,
         });
 
-        return response.status(201).json(product);
+        const productWithImageUrl = {
+            ...product.dataValues,
+            imageUrl: `${request.protocol}://${request.get('host')}/uploads/${product.path}`,
+        };
+
+        return response.status(201).json(productWithImageUrl);
     }
 
     async update(request, response) {
@@ -76,7 +81,12 @@ class ProductController {
             },
         );
 
-        return response.status(200).json();
+        const updatedProduct = await Product.findByPk(id);
+
+        return response.status(200).json({
+            ...updatedProduct.dataValues,
+            imageUrl: `${request.protocol}://${request.get('host')}/uploads/${updatedProduct.path}`,
+        });
     }
 
     async index(request, response) {
@@ -90,9 +100,12 @@ class ProductController {
             ],
         });
 
-        console.log({ userId: request.userId });
+        const productsWithImageUrl = products.map((product) => ({
+            ...product.dataValues,
+            imageUrl: `${request.protocol}://${request.get('host')}/uploads/${product.path}`,
+        }));
 
-        return response.json(products);
+        return response.json(productsWithImageUrl);
     }
 
     // Método para buscar apenas produtos em oferta (offer: true)
@@ -109,16 +122,21 @@ class ProductController {
                         attributes: ['id', 'name'],
                     },
                 ],
-                order: [['created_at', 'DESC']] // Os mais recentes primeiro
+                order: [['created_at', 'DESC']],
             });
 
-            return response.json(products);
+            const productsWithImageUrl = products.map((product) => ({
+                ...product.dataValues,
+                imageUrl: `${request.protocol}://${request.get('host')}/uploads/${product.path}`,
+            }));
+
+            return response.json(productsWithImageUrl);
         } catch (error) {
             console.error('Erro ao buscar produtos em oferta:', error);
             return response.status(500).json({
                 error: 'Erro interno',
                 details: error.message,
-                stack: error.stack
+                stack: error.stack,
             });
         }
     }
@@ -142,11 +160,16 @@ class ProductController {
                 order: [['created_at', 'DESC']]
             });
 
-            return response.json(products);
+            const productsWithImageUrl = products.map((product) => ({
+                ...product.dataValues,
+                imageUrl: `${request.protocol}://${request.get('host')}/uploads/${product.path}`,
+            }));
+
+            return response.json(productsWithImageUrl);
         } catch (error) {
             console.error('Erro ao buscar produtos por categoria:', error);
             return response.status(500).json({
-                error: 'Erro interno do servidor ao buscar produtos por categoria'
+                error: 'Erro interno do servidor ao buscar produtos por categoria',
             });
         }
     }
@@ -170,11 +193,14 @@ class ProductController {
                 return response.status(404).json({ error: 'Produto não encontrado' });
             }
 
-            return response.json(product);
+            return response.json({
+                ...product.dataValues,
+                imageUrl: `${request.protocol}://${request.get('host')}/uploads/${product.path}`,
+            });
         } catch (error) {
             console.error('Erro ao buscar produto:', error);
             return response.status(500).json({
-                error: 'Erro interno do servidor ao buscar produto'
+                error: 'Erro interno do servidor ao buscar produto',
             });
         }
     }
