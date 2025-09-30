@@ -89,9 +89,19 @@ class CategoryController {
     }
 
     async index(request, response) {
-        const categories = await Category.findAll();
+        try {
+            const categories = await Category.findAll();
 
-        return response.json(categories);
+            const categoriesWithImageUrl = categories.map((category) => ({
+                ...category.dataValues,
+                imageUrl: `${request.protocol}://${request.get('host')}/category-file/${category.path}`,
+            }));
+
+            return response.json(categoriesWithImageUrl);
+        } catch (error) {
+            console.error('Erro ao buscar categorias:', error);
+            return response.status(500).json({ error: 'Erro interno ao buscar categorias' });
+        }
     }
 
 }
