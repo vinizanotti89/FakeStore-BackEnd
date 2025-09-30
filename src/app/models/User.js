@@ -23,7 +23,7 @@ class User extends Model {
             resetToken: {
                 type: DataTypes.STRING,
                 allowNull: true,
-                field: 'resetToken',
+                field: 'resettoken',
             },
         },
             {
