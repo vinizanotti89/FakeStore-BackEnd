@@ -12,31 +12,18 @@ class App {
   constructor() {
     this.app = express();
 
+    // ✅ CORS para liberar acesso ao frontend
     this.app.use(cors({
-      origin: process.env.FRONTEND_URL || "*"
+      origin: process.env.FRONTEND_URL || '*',
     }));
 
-    // Servindo arquivos estáticos de /uploads
-    this.app.use('/uploads', express.static(resolve(__dirname, '..', 'uploads')));
-
-    this.middlewares();
-    this.routes();
-  }
-
-  middlewares() {
+    // ✅ Permite receber JSON no body das requisições
     this.app.use(express.json());
 
-    this.app.use(
-      '/product-file',
-      express.static(resolve(__dirname, '..', 'uploads'))
-    );
-    this.app.use(
-      '/category-file',
-      express.static(resolve(__dirname, '..', 'uploads'))
-    );
-  }
+    // ✅ Servindo arquivos estáticos de /uploads
+    this.app.use('/uploads', express.static(resolve(__dirname, '..', 'uploads')));
 
-  routes() {
+    // ✅ Definindo as rotas da aplicação
     this.app.use(routes);
   }
 }
