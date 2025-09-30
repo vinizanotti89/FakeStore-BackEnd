@@ -116,7 +116,9 @@ class ProductController {
         } catch (error) {
             console.error('Erro ao buscar produtos em oferta:', error);
             return response.status(500).json({
-                error: 'Erro interno do servidor ao buscar produtos em oferta'
+                error: 'Erro interno',
+                details: error.message,
+                stack: error.stack
             });
         }
     }
