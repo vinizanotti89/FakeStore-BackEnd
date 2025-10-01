@@ -37,13 +37,13 @@ routes.post('/products', hasRole('admin'), upload.single('file'), ProductControl
 routes.get('/products', hasRole('admin'), ProductController.index);
 routes.put('/products/:id', hasRole('admin'), upload.single('file'), ProductController.update);
 
-routes.get("/purchases", PurchaseController.index);
-routes.post("/save-purchase", PurchaseController.store);
-
 routes.post('/categories', hasRole('admin'), upload.single('file'), CategoryController.store);
 routes.put('/categories/:id', hasRole('admin'), upload.single('file'), CategoryController.update);
 
 routes.use(authMiddleware); // Aplica authMiddleware para todas as rotas abaixo
+
+routes.get("/purchases", PurchaseController.index);
+routes.post("/save-purchase", PurchaseController.store);
 
 routes.post('/orders', OrderController.store);
 routes.get('/orders', hasRole('admin'), OrderController.index);
