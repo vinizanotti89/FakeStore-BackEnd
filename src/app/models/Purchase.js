@@ -1,20 +1,44 @@
-import { Model, DataTypes } from "sequelize";
+import mongoose from 'mongoose';
 
-class Purchase extends Model {
-  static init(sequelize) {
-    super.init(
+const PurchaseSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User', 
+      required: true,
+    },
+    products: [
       {
-        product: DataTypes.STRING,
-        price: DataTypes.FLOAT,
-        date: DataTypes.DATE,
-        status: DataTypes.STRING,
+        productId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Product', 
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+        },
+        price: {
+          type: Number,
+          required: true,
+        },
       },
-      {
-        sequelize,
-        modelName: "Purchase",
-      }
-    );
-  }
-}
+    ],
+    totalAmount: {
+      type: Number,
+      required: true,
+    },
+    status: {
+      type: String,
+      default: 'completed', 
+    },
+    purchaseDate: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+  { timestamps: true }
+);
 
-export default Purchase;
+export default mongoose.model('Purchase', PurchaseSchema);
+
