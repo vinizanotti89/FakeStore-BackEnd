@@ -38,7 +38,12 @@ class PurchaseController {
             });
         } catch (error) {
             console.error('Erro ao salvar a compra:', error);
-            return res.status(500).json({ error: 'Erro ao salvar a compra' });
+            return res.status(500).json({
+                error: "Erro ao salvar a compra",
+                details: error.message,
+                stack: error.stack
+            });
+
         }
     }
 }
