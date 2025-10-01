@@ -89,8 +89,8 @@ class OrderController {
         const { id } = request.params;
         const { status } = request.body;
 
-        try{
-        await Order.updateOne({ _id: id },{ $set: { status } });
+        try {
+            await Order.updateOne({ _id: id }, { $set: { status } });
         }
         catch (err) {
             return response.status(400).json({ error: err.message });
@@ -99,5 +99,26 @@ class OrderController {
         return response.status(200).json({ message: 'status updated successfully' });
 
     }
-}   
+
+    async getUserOrders(req, res) {
+        try {
+            const orders = await Order.findAll({
+                where: { user_id: req.userId },
+                include: [
+                    {
+                        model: Product,
+                        as: 'products',
+                        through: { attributes: ['quantity'] }, // quantidade dos produtos na ordem
+                    },
+                ],
+                order: [['created_at', 'DESC']],
+            });
+
+            return res.json(orders);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Erro ao buscar pedidos' });
+        }
+    }
+}
 export default new OrderController();

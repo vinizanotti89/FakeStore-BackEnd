@@ -11,6 +11,7 @@ import ProductController from './app/controllers/ProductController.js';
 import CategoryController from './app/controllers/CategoryController.js';
 import OrderController from './app/controllers/OrderController.js';
 import ForgotPasswordController from './app/controllers/ForgotPasswordController.js';
+import PurchaseController from './app/controllers/PurchaseController.js';
 
 import CreatePaymentIntentController from './app/controllers/stripe/CreatePaymentIntentController.js';
 
@@ -35,6 +36,8 @@ routes.get('/categories', CategoryController.index);
 routes.post('/products', hasRole('admin'), upload.single('file'), ProductController.store);
 routes.get('/products', hasRole('admin'), ProductController.index);
 routes.put('/products/:id', hasRole('admin'), upload.single('file'), ProductController.update);
+
+routes.get("/purchases", PurchaseController.index);
 
 routes.post('/categories', hasRole('admin'), upload.single('file'), CategoryController.store);
 routes.put('/categories/:id', hasRole('admin'), upload.single('file'), CategoryController.update);
