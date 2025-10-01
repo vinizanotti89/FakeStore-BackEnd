@@ -10,7 +10,7 @@ const PurchaseSchema = new mongoose.Schema(
     products: [
       {
         productId: {
-          type: String,
+          type: mongoose.Schema.Types.Mixed,
           required: true,
         },
         name: { 
