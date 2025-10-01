@@ -10,8 +10,11 @@ const PurchaseSchema = new mongoose.Schema(
     products: [
       {
         productId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'Product',
+          type: String,
+          required: true,
+        },
+        name: { 
+          type: String,
           required: true,
         },
         quantity: {
@@ -22,8 +25,10 @@ const PurchaseSchema = new mongoose.Schema(
           type: Number,
           required: true,
         },
+        image: String,
       },
     ],
+
     totalAmount: {
       type: Number,
       required: true,

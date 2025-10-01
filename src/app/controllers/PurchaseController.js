@@ -16,10 +16,13 @@ class PurchaseController {
     // Rota para salvar uma nova compra
     async store(req, res) {
         console.log("Dados recebidos: ", req.body);
-        try {
-            const { userId, products, totalAmount } = req.body;
 
-            // Cria uma nova compra
+        try {
+            const { products, totalAmount } = req.body;
+
+            // userId vem do token decodificado
+            const userId = req.user.id;
+
             const newPurchase = new Purchase({
                 userId,
                 products,
@@ -29,10 +32,13 @@ class PurchaseController {
 
             await newPurchase.save();
 
-            return res.status(201).json({ message: 'Compra realizada com sucesso!', purchase: newPurchase });
+            return res.status(201).json({
+                message: 'Compra realizada com sucesso!',
+                purchase: newPurchase,
+            });
         } catch (error) {
             console.error('Erro ao salvar a compra:', error);
-            return res.status(500).json({ error: "Erro ao salvar a compra" });
+            return res.status(500).json({ error: 'Erro ao salvar a compra' });
         }
     }
 }
