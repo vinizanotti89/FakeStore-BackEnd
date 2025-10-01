@@ -5,9 +5,9 @@
   "main": "src/server.js",
   "type": "module",
   "scripts": {
-  "dev": "nodemon src/server.js",
-  "start": "node src/server.js"
-},
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js"
+  },
   "keywords": [],
   "author": {
     "name": "Vinícius Zanotti",
@@ -22,7 +22,8 @@
     "gh": "^2.8.9",
     "jsonwebtoken": "^9.0.2",
     "mogoose": "^0.0.1-security",
-    "mongoose": "^8.15.1",
+    "mongodb": "^6.20.0",
+    "mongoose": "^8.18.3",
     "multer": "^2.0.1",
     "nodemon": "^3.1.10",
     "pg": "^8.16.0",

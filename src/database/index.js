@@ -1,11 +1,28 @@
 import Sequelize from "sequelize";
 import mongoose from "mongoose";
-
 import configDatabase from "../config/database.js";
 
 import User from "../app/models/User.js";
 import Product from "../app/models/Product.js";
 import Category from "../app/models/Category.js";
+import dotenv from 'dotenv';
+
+dotenv.config();
+console.log("MONGO_URI:", process.env.MONGO_URI);
+
+
+const mongoUri = process.env.MONGO_URI;
+
+console.log("Mongo URI:", mongoUri); // Verifique se a URL está sendo lida corretamente
+
+if (!mongoUri) {
+  console.error("Erro: MONGO_URI não encontrado. Verifique o arquivo .env.");
+  process.exit(1); // Se a variável não estiver presente, sai da aplicação
+}
+
+mongoose.connect(mongoUri)
+  .then(() => console.log('MongoDB conectado com sucesso!'))
+  .catch((err) => console.error('Erro ao conectar ao MongoDB:', err));
 
 const models = [User, Product, Category];
 

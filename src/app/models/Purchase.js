@@ -4,14 +4,14 @@ const PurchaseSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User', 
+      ref: 'User',
       required: true,
     },
     products: [
       {
         productId: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: 'Product', 
+          ref: 'Product',
           required: true,
         },
         quantity: {
@@ -30,7 +30,7 @@ const PurchaseSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      default: 'completed', 
+      default: 'completed',
     },
     purchaseDate: {
       type: Date,

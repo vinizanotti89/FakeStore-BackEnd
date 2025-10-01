@@ -15,6 +15,7 @@ class PurchaseController {
 
     // Rota para salvar uma nova compra
     async store(req, res) {
+        console.log("Dados recebidos: ", req.body);
         try {
             const { userId, products, totalAmount } = req.body;
 
@@ -23,10 +24,9 @@ class PurchaseController {
                 userId,
                 products,
                 totalAmount,
-                status: 'completed', // O status pode ser 'completed', 'pending', 'failed', etc.
+                status: 'completed',
             });
 
-            // Salva a compra no banco
             await newPurchase.save();
 
             return res.status(201).json({ message: 'Compra realizada com sucesso!', purchase: newPurchase });
