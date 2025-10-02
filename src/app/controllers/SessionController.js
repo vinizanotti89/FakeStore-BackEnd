@@ -1,7 +1,6 @@
 import * as Yup from 'yup';
 import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
-import authConfig from '../../config/auth.js';
 
 class SessionController {
     async store(req, res) {
@@ -19,27 +18,27 @@ class SessionController {
 
             const { email, password } = req.body;
 
-            // 🔹 Para Mongoose:
-            const user = await User.findOne({ email });
+            // Busca usuário no PostgreSQL
+            const user = await User.findOne({ where: { email } });
             if (!user) return emailOrPasswordIncorrect();
 
-            // 🔹 Checa senha (precisa estar implementado no schema do User)
+            // Checa senha
             const isSamePassword = await user.checkPassword(password);
             if (!isSamePassword) return emailOrPasswordIncorrect();
 
-            // 🔹 Cria token sem expiração automática
+            // Cria token sem expiração automática usando o secret do usuário
             const token = jwt.sign(
                 {
-                    id: user._id,
+                    id: user.id,
                     name: user.name,
                     email: user.email,
                     admin: user.admin,
                 },
-                authConfig.secret
+                user.secret
             );
 
             return res.json({
-                id: user._id,
+                id: user.id,
                 name: user.name,
                 email: user.email,
                 admin: user.admin,

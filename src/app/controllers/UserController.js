@@ -39,6 +39,7 @@ class UserController {
             email,
             password,
             role,
+            secret: uuidv4(),
         });
 
         const resetToken = uuidv4();

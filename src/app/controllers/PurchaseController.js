@@ -1,67 +1,68 @@
 import Purchase from "../models/Purchase.js";
-import Product from "../models/Product.js";
-import User from "../models/User.js";
 
 class PurchaseController {
-    // Listar compras (por usuário ou todas se for admin)
+    // Listar compras do usuário
     async index(req, res) {
         try {
-            const { admin } = req;
-
-            let purchases;
-            if (admin) {
-                purchases = await Purchase.find().sort({ createdAt: -1 });
-            } else {
-                purchases = await Purchase.find({ userId: req.userId }).sort({ createdAt: -1 });
-            }
+            const purchases = await Purchase.find({ userId: req.userId })
+                .sort({ createdAt: -1 })
+                .populate("products.productId", "name price"); 
 
             return res.json(purchases);
-        } catch (err) {
-            console.error("Erro ao buscar compras:", err);
-            return res.status(500).json({ error: "Erro ao buscar compras" });
+        } catch (error) {
+            console.error("Erro ao buscar compras:", error);
+            return res.status(500).json({
+                error: "Erro ao buscar compras",
+                details: error.message,
+            });
         }
     }
 
-    // Criar nova compra
+    // Salvar nova compra
     async store(req, res) {
+        console.log("Dados recebidos:", req.body);
+
         try {
+            const userId = req.userId; // ✅ do middleware
+            if (!userId) {
+                return res.status(401).json({ error: "Usuário não autenticado" });
+            }
+
             const { products, totalAmount } = req.body;
-            const userId = req.userId;
 
-            // Verifica se o usuário existe no SQL
-            const userExists = await User.findByPk(userId);
-            if (!userExists) {
-                return res.status(404).json({ error: "Usuário não encontrado" });
+            if (!Array.isArray(products) || products.length === 0) {
+                return res.status(400).json({ error: "Carrinho vazio ou inválido" });
             }
 
-            // Validação dos produtos
-            const validatedProducts = [];
-            for (let item of products) {
-                const product = await Product.findByPk(item.productId);
-                if (!product) {
-                    return res.status(404).json({ error: `Produto ${item.productId} não encontrado` });
+            if (!totalAmount || typeof totalAmount !== "number") {
+                return res.status(400).json({ error: "Total da compra inválido" });
+            }
+
+            products.forEach((p, i) => {
+                if (!p.productId || !p.quantity || !p.price) {
+                    throw new Error(`Produto inválido no item ${i}`);
                 }
-
-                validatedProducts.push({
-                    productId: product.id,
-                    name: product.name, // snapshot
-                    price: product.price,
-                    quantity: item.quantity,
-                });
-            }
-
-            // Cria a compra no Mongo
-            const purchase = await Purchase.create({
-                userId,
-                products: validatedProducts,
-                totalAmount,
-                status: "pending",
             });
 
-            return res.status(201).json(purchase);
-        } catch (err) {
-            console.error("Erro ao salvar compra:", err);
-            return res.status(500).json({ error: "Erro ao salvar compra" });
+            const newPurchase = new Purchase({
+                userId,
+                products,
+                totalAmount,
+                status: "completed",
+            });
+
+            await newPurchase.save();
+
+            return res.status(201).json({
+                message: "Compra realizada com sucesso!",
+                purchase: newPurchase,
+            });
+        } catch (error) {
+            console.error("Erro ao salvar a compra:", error);
+            return res.status(500).json({
+                error: "Erro ao salvar a compra",
+                details: error.message,
+            });
         }
     }
 }
