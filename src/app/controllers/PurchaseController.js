@@ -1,6 +1,6 @@
-import Purchase from "../models/mongo/Purchase.js";
-import Product from "../models/sql/Product.js";
-import User from "../models/sql/User.js"; // 
+import Purchase from "../models/Purchase.js";
+import Product from "../models/Product.js";
+import User from "../models/User.js";
 
 class PurchaseController {
     // Listar compras (por usuário ou todas se for admin)
