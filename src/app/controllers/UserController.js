@@ -49,7 +49,7 @@ class UserController {
             id: user.id,
             name: user.name,
             email: user.email,
-            role: user.admin,
+            role: user.role,
             resetToken: user.resetToken, 
         });
     }

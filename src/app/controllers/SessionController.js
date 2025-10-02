@@ -4,56 +4,50 @@ import jwt from 'jsonwebtoken';
 import authConfig from '../../config/auth.js';
 
 class SessionController {
-    async store(request, response) {
+    async store(req, res) {
         const schema = Yup.object({
             email: Yup.string().email().required(),
             password: Yup.string().required(),
         });
 
-        const emailOrPasswordIncorrect = () => {
-            return response.status(401).json({
-                error: 'Make sure your email or password are correct',
-            });
-        };
+        const emailOrPasswordIncorrect = () =>
+            res.status(401).json({ error: 'Verifique seu email e senha' });
 
         try {
-            const isValid = await schema.isValid(request.body);
-            if (!isValid) {
-                return emailOrPasswordIncorrect();
-            }
+            const isValid = await schema.isValid(req.body);
+            if (!isValid) return emailOrPasswordIncorrect();
 
-            const { email, password } = request.body;
+            const { email, password } = req.body;
 
-            const user = await User.findOne({ where: { email } });
-            if (!user) {
-                return emailOrPasswordIncorrect();
-            }
+            // 🔹 Para Mongoose:
+            const user = await User.findOne({ email });
+            if (!user) return emailOrPasswordIncorrect();
 
-            const isSamePassword = await user.checkPassword(password); // <-- Isso pode causar erro!
-            if (!isSamePassword) {
-                return emailOrPasswordIncorrect();
-            }
+            // 🔹 Checa senha (precisa estar implementado no schema do User)
+            const isSamePassword = await user.checkPassword(password);
+            if (!isSamePassword) return emailOrPasswordIncorrect();
 
+            // 🔹 Cria token sem expiração automática
             const token = jwt.sign(
-                { id: user.id, name: user.name },
-                authConfig.secret,
                 {
-                    expiresIn: authConfig.expiresIn,
-                }
+                    id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    admin: user.admin,
+                },
+                authConfig.secret
             );
 
-            return response.json({
-                id: user.id,
+            return res.json({
+                id: user._id,
                 name: user.name,
-                email,
+                email: user.email,
                 admin: user.admin,
                 token,
             });
         } catch (err) {
-            console.error('Erro no login:', err); // Mostra no console
-            return response.status(500).json({
-                error: 'Erro interno no servidor. Verifique o console.',
-            });
+            console.error('Erro no login:', err);
+            return res.status(500).json({ error: 'Erro interno no servidor' });
         }
     }
 }

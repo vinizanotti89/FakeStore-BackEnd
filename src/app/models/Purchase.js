@@ -1,17 +1,42 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const PurchaseSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  products: [
-    {
-      productId: { type: mongoose.Schema.Types.Mixed, required: true },
-      quantity: { type: Number, required: true },
-      price: { type: Number, required: true }
-    }
-  ],
-  totalAmount: { type: Number, required: true },
-  status: { type: String, default: 'completed' },
-  purchaseDate: { type: Date, default: Date.now }
-}, { timestamps: true });
+const PurchaseSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: String, // UUID vindo do SQL
+      required: true,
+    },
+    products: [
+      {
+        productId: {
+          type: String, // id do produto vindo do SQL
+          required: true,
+        },
+        name: String,   // opcional, pode guardar snapshot do nome do produto
+        quantity: {
+          type: Number,
+          required: true,
+          min: 1,
+        },
+        price: {
+          type: Number,
+          required: true,
+          min: 0,
+        },
+      },
+    ],
+    totalAmount: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    status: {
+      type: String,
+      enum: ["pending", "completed", "shipped", "delivered", "canceled"],
+      default: "pending",
+    },
+  },
+  { timestamps: true }
+);
 
-export default mongoose.model('Purchase', PurchaseSchema);
+export default mongoose.model("Purchase", PurchaseSchema);

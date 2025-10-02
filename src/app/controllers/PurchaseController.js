@@ -1,79 +1,67 @@
-import Purchase from "../models/Purchase.js";
+import Purchase from "../models/mongo/Purchase.js";
+import Product from "../models/sql/Product.js";
+import User from "../models/sql/User.js"; // 
 
 class PurchaseController {
-    // Listar todas as compras (pode filtrar por usuário se quiser)
+    // Listar compras (por usuário ou todas se for admin)
     async index(req, res) {
         try {
-            const purchases = await Purchase.find({ userId: req.user?.id })
-                .sort({ createdAt: -1 })
-                .populate("products.productId", "name price"); // opcional: popula info do produto
+            const { admin } = req;
+
+            let purchases;
+            if (admin) {
+                purchases = await Purchase.find().sort({ createdAt: -1 });
+            } else {
+                purchases = await Purchase.find({ userId: req.userId }).sort({ createdAt: -1 });
+            }
 
             return res.json(purchases);
-        } catch (error) {
-            console.error("Erro ao buscar compras:", error);
-            return res.status(500).json({
-                error: "Erro ao buscar compras",
-                details: error.message,
-                stack: error.stack,
-            });
+        } catch (err) {
+            console.error("Erro ao buscar compras:", err);
+            return res.status(500).json({ error: "Erro ao buscar compras" });
         }
     }
 
-    // Salvar nova compra
+    // Criar nova compra
     async store(req, res) {
-        console.log("Dados recebidos:", req.body);
-
         try {
-            const userId = req.user?.id; // obtido do token
-            if (!userId) {
-                return res.status(401).json({ error: "Usuário não autenticado" });
-            }
-
             const { products, totalAmount } = req.body;
+            const userId = req.userId;
 
-            // Validação básica
-            if (!Array.isArray(products) || products.length === 0) {
-                return res.status(400).json({ error: "Carrinho vazio ou inválido" });
+            // Verifica se o usuário existe no SQL
+            const userExists = await User.findByPk(userId);
+            if (!userExists) {
+                return res.status(404).json({ error: "Usuário não encontrado" });
             }
 
-            if (!totalAmount || typeof totalAmount !== "number") {
-                return res.status(400).json({ error: "Total da compra inválido" });
+            // Validação dos produtos
+            const validatedProducts = [];
+            for (let item of products) {
+                const product = await Product.findByPk(item.productId);
+                if (!product) {
+                    return res.status(404).json({ error: `Produto ${item.productId} não encontrado` });
+                }
+
+                validatedProducts.push({
+                    productId: product.id,
+                    name: product.name, // snapshot
+                    price: product.price,
+                    quantity: item.quantity,
+                });
             }
 
-            // Validar cada produto
-            products.forEach((p, index) => {
-                if (!p.productId) {
-                    throw new Error(`productId inválido no item ${index}`);
-                }
-                if (!p.quantity || typeof p.quantity !== "number") {
-                    throw new Error(`quantity inválido no item ${index}`);
-                }
-                if (!p.price || typeof p.price !== "number") {
-                    throw new Error(`price inválido no item ${index}`);
-                }
-            });
-
-            // Cria a compra
-            const newPurchase = new Purchase({
+            // Cria a compra no Mongo
+            const purchase = await Purchase.create({
                 userId,
-                products,
+                products: validatedProducts,
                 totalAmount,
-                status: "completed",
+                status: "pending",
             });
 
-            await newPurchase.save();
-
-            return res.status(201).json({
-                message: "Compra realizada com sucesso!",
-                purchase: newPurchase,
-            });
-        } catch (error) {
-            console.error("Erro ao salvar a compra:", error);
-            return res.status(500).json({
-                error: "Erro ao salvar a compra",
-                details: error.message,
-                stack: error.stack,
-            });
+            return res.status(201).json(purchase);
+        } catch (err) {
+            console.error("Erro ao salvar compra:", err);
+            return res.status(500).json({ error: "Erro ao salvar compra" });
         }
     }
 }
