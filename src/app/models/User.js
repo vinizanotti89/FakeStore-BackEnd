@@ -25,6 +25,10 @@ class User extends Model {
                 allowNull: true,
                 field: 'resettoken',
             },
+            secret: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
         },
             {
                 sequelize,
